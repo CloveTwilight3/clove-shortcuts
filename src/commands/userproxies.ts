@@ -1,10 +1,10 @@
-import { 
-  ApplicationCommandType,
-  ChatInputCommandInteraction, 
-  SlashCommandBuilder,
-  ContextMenuCommandBuilder,
-  UserContextMenuCommandInteraction,
-  MessageContextMenuCommandInteraction
+import {
+    ApplicationCommandType,
+    ChatInputCommandInteraction,
+    SlashCommandBuilder,
+    ContextMenuCommandBuilder,
+    UserContextMenuCommandInteraction,
+    MessageContextMenuCommandInteraction
 } from 'discord.js';
 import { SlashCommand, UserContextMenuCommand, MessageContextMenuCommand } from '../types/Command';
 
@@ -15,7 +15,7 @@ export const slashCommand: SlashCommand = {
     data: new SlashCommandBuilder()
         .setName('userproxies')
         .setDescription('Send the tutorial on how to setup a userproxy')
-        .addUserOption(option => 
+        .addUserOption(option =>
             option
                 .setName('user')
                 .setDescription('User to ping')
@@ -30,7 +30,7 @@ export const slashCommand: SlashCommand = {
         } else {
             await interaction.reply(USERPROXY_MESSAGE);
         }
-    } 
+    }
 };
 
 // User context menu: Right-click user → Apps → Userproxies

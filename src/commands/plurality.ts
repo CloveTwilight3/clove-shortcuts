@@ -1,12 +1,8 @@
-import { 
-  ApplicationCommandType,
-  ChatInputCommandInteraction, 
-  SlashCommandBuilder,
-  ContextMenuCommandBuilder,
-  UserContextMenuCommandInteraction,
-  MessageContextMenuCommandInteraction
+import {
+    ChatInputCommandInteraction,
+    SlashCommandBuilder
 } from 'discord.js';
-import { SlashCommand, UserContextMenuCommand, MessageContextMenuCommand } from '../types/Command';
+import { SlashCommand } from '../types/Command';
 
 const PLURALITY_MESSAGE = 'Plurality (or multiplicity) is the existence of multiple self-aware entities inside one physical brain.\nYou can find some simple information [here](<https://morethanone.info>)\nand some more advanced info [here](<https://pluralpedia.org/w/Main_Page>)'
 
@@ -15,7 +11,7 @@ export const slashCommand: SlashCommand = {
     data: new SlashCommandBuilder()
         .setName('plurality')
         .setDescription('Send information about plurality')
-        .addUserOption(option => 
+        .addUserOption(option =>
             option
                 .setName('user')
                 .setDescription('User to ping')
@@ -30,32 +26,8 @@ export const slashCommand: SlashCommand = {
         } else {
             await interaction.reply(PLURALITY_MESSAGE);
         }
-    } 
-};
-
-// User context menu: Right-click user → Apps → Plurality
-export const userContextCommand: UserContextMenuCommand = {
-    data: new ContextMenuCommandBuilder()
-        .setName('Plurality')
-        .setType(ApplicationCommandType.User),
-
-    async execute(interaction: UserContextMenuCommandInteraction) {
-        const targetUser = interaction.targetUser;
-        await interaction.reply(`Hey there, ${targetUser}! ${PLURALITY_MESSAGE}`);
-    }
-};
-
-// Message context menu: Right-click message → Apps → Plurality
-export const messageContextCommand: MessageContextMenuCommand = {
-    data: new ContextMenuCommandBuilder()
-        .setName('Plurality')
-        .setType(ApplicationCommandType.Message),
-
-    async execute(interaction: MessageContextMenuCommandInteraction) {
-        const targetUser = interaction.targetMessage.author;
-        await interaction.reply(`Hey there, ${targetUser}! ${PLURALITY_MESSAGE}`);
     }
 };
 
 // Export all commands as an array for the command handler
-export const commands = [slashCommand, userContextCommand, messageContextCommand];
+export const commands = [slashCommand];

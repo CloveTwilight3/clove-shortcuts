@@ -34,29 +34,4 @@ export const slashCommand: SlashCommand = {
     }
 };
 
-
-// User context menu: Right-click user → Apps → Plural
-export const userContextCommand: UserContextMenuCommand = {
-    data: new ContextMenuCommandBuilder()
-        .setName('Plural')
-        .setType(ApplicationCommandType.User),
-
-    async execute(interaction: UserContextMenuCommandInteraction) {
-        const targetUser = interaction.targetUser;
-        await interaction.reply(`Hey there, ${targetUser}! ${PLURAL_MESSAGE}`);
-    }
-};
-
-// Message context menu: Right-click message → Apps → Plueal
-export const messageContextCommand: MessageContextMenuCommand = {
-    data: new ContextMenuCommandBuilder()
-        .setName('Plural')
-        .setType(ApplicationCommandType.Message),
-
-    async execute(interaction: MessageContextMenuCommandInteraction) {
-        const targetUser = interaction.targetMessage.author;
-        await interaction.reply(`Hey there, ${targetUser}! ${PLURAL_MESSAGE}`);
-    }
-};
-
-export const commands = [slashCommand, userContextCommand, messageContextCommand];
+export const commands = [slashCommand];

@@ -1,10 +1,10 @@
-import { 
-  ApplicationCommandType,
-  ChatInputCommandInteraction, 
-  SlashCommandBuilder,
-  ContextMenuCommandBuilder,
-  UserContextMenuCommandInteraction,
-  MessageContextMenuCommandInteraction
+import {
+    ApplicationCommandType,
+    ChatInputCommandInteraction,
+    SlashCommandBuilder,
+    ContextMenuCommandBuilder,
+    UserContextMenuCommandInteraction,
+    MessageContextMenuCommandInteraction
 } from 'discord.js';
 import { SlashCommand, UserContextMenuCommand, MessageContextMenuCommand } from '../types/Command';
 
@@ -22,7 +22,7 @@ export const slashCommand: SlashCommand = {
                 .setDescription('The user to ping')
                 .setRequired(false)
         ),
-    
+
     async execute(interaction: ChatInputCommandInteraction) {
         const targetUser = interaction.options.getUser('user');
 
@@ -34,29 +34,4 @@ export const slashCommand: SlashCommand = {
     }
 };
 
-
-// User context menu: Right-click user → Apps → PK
-export const userContextCommand: UserContextMenuCommand = {
-    data: new ContextMenuCommandBuilder()
-        .setName('PK')
-        .setType(ApplicationCommandType.User),
-
-    async execute(interaction: UserContextMenuCommandInteraction) {
-        const targetUser = interaction.targetUser;
-        await interaction.reply(`Hey there, ${targetUser}! ${PK_MESSAGE}`);
-    }
-};
-
-// Message context menu: Right-click message → Apps → PK
-export const messageContextCommand: MessageContextMenuCommand = {
-    data: new ContextMenuCommandBuilder()
-        .setName('PK')
-        .setType(ApplicationCommandType.Message),
-
-    async execute(interaction: MessageContextMenuCommandInteraction) {
-        const targetUser = interaction.targetMessage.author;
-        await interaction.reply(`Hey there, ${targetUser}! ${PK_MESSAGE}`);
-    }
-};
-
-export const commands = [slashCommand, userContextCommand, messageContextCommand];
+export const commands = [slashCommand];
