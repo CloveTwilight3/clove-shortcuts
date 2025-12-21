@@ -92,9 +92,30 @@ class DoughAPIClient {
     }
 
     /**
-     * Add a member to the front
+     * Switch to multiple fronters at once (recommended method)
+     * This matches the behavior of the SwitchManager panel
+     */
+    async multiSwitch(memberIds: string[]): Promise<{ status: string; message: string; fronters: any[]; count: number }> {
+        try {
+            const response = await this.client.post('/api/multi_switch', {
+                member_ids: memberIds
+            });
+            return response.data;
+        } catch (error) {
+            if (axios.isAxiosError(error)) {
+                throw new Error(`Failed to switch fronters: ${error.response?.data?.detail || error.message}`);
+            }
+            throw error;
+        }
+    }
+
+    /**
+     * DEPRECATED: Add a member to the front
+     * Use multiSwitch instead for better consistency
+     * @deprecated Use multiSwitch() instead
      */
     async addFronter(memberId: string): Promise<{ success: boolean; message: string; fronters: any[] }> {
+        console.warn('addFronter() is deprecated. Use multiSwitch() instead.');
         try {
             const response = await this.client.post('/api/bot/fronters/add', {
                 member_id: memberId
@@ -109,9 +130,12 @@ class DoughAPIClient {
     }
 
     /**
-     * Remove a member from the front
+     * DEPRECATED: Remove a member from the front
+     * Use multiSwitch instead for better consistency
+     * @deprecated Use multiSwitch() instead
      */
     async removeFronter(memberId: string): Promise<{ success: boolean; message: string; fronters: any[] }> {
+        console.warn('removeFronter() is deprecated. Use multiSwitch() instead.');
         try {
             const response = await this.client.post('/api/bot/fronters/remove', {
                 member_id: memberId

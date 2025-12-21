@@ -38,7 +38,7 @@ export default {
                 .addOptions(
                     fronters.slice(0, 25).map((member: any) => {
                         const option: any = {
-                            label: member.name,
+                            label: member.display_name || member.name,
                             description: member.pronouns || 'No pronouns set',
                             value: member.id
                         };
@@ -62,7 +62,7 @@ export default {
                 .setDescription('Select a member from the dropdown below to remove them from the front.')
                 .addFields({
                     name: 'Current Fronters',
-                    value: fronters.map((f: any) => `• ${f.name}`).join('\n')
+                    value: fronters.map((f: any) => `• ${f.display_name || f.name}`).join('\n')
                 })
                 .setFooter({ text: 'Selection will expire in 60 seconds' });
 
@@ -91,18 +91,40 @@ export default {
                 const selectedMember = fronters.find((m: any) => m.id === selectedMemberId);
 
                 try {
-                    // Remove the member from front
-                    const result = await doughAPI.removeFronter(selectedMemberId);
+                    // Get current fronters again to ensure we have the latest state
+                    const currentFronters = await doughAPI.getFronters();
+                    const currentMemberIds: string[] = currentFronters.members?.map((m: any) => m.id) || [];
+                    
+                    // Check if member is still fronting
+                    if (!currentMemberIds.includes(selectedMemberId)) {
+                        const infoEmbed = new EmbedBuilder()
+                            .setColor(0xFEE75C) // Yellow
+                            .setTitle('ℹ️ Not Fronting')
+                            .setDescription(`**${selectedMember?.display_name || selectedMember?.name}** is not currently fronting!`)
+                            .setTimestamp();
 
-                    if (result.success) {
+                        await i.update({
+                            embeds: [infoEmbed],
+                            components: []
+                        });
+                        
+                        collector.stop();
+                        return;
+                    }
+                    
+                    // Remove the member from the fronters list
+                    const newMemberIds: string[] = currentMemberIds.filter((id: string) => id !== selectedMemberId);
+                    const result = await doughAPI.multiSwitch(newMemberIds);
+
+                    if (result.status === 'success') {
                         const successEmbed = new EmbedBuilder()
                             .setColor(0x57F287) // Green
                             .setTitle('✅ Member Removed from Front')
-                            .setDescription(`**${selectedMember?.name}** has been removed from the front.`)
+                            .setDescription(`**${selectedMember?.display_name || selectedMember?.name}** has been removed from the front.`)
                             .addFields({
                                 name: 'Current Fronters',
                                 value: result.fronters.length > 0
-                                    ? result.fronters.map((f: any) => `• ${f.name}`).join('\n')
+                                    ? result.fronters.map((f: any) => `• ${f.display_name || f.name}`).join('\n')
                                     : 'None'
                             })
                             .setTimestamp();
@@ -115,7 +137,7 @@ export default {
                         const errorEmbed = new EmbedBuilder()
                             .setColor(0xED4245) // Red
                             .setTitle('❌ Failed to Remove Member')
-                            .setDescription(result.message)
+                            .setDescription(result.message || 'Unknown error occurred')
                             .setTimestamp();
 
                         await i.update({
