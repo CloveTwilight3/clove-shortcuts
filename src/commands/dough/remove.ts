@@ -36,12 +36,21 @@ export default {
                 .setCustomId('select_member_to_remove')
                 .setPlaceholder('Select a member to remove from front')
                 .addOptions(
-                    fronters.slice(0, 25).map((member: any) => ({
-                        label: member.name,
-                        description: member.pronouns || 'No pronouns set',
-                        value: member.id,
-                        emoji: member.tags && member.tags.length > 0 ? member.tags[0] : undefined
-                    }))
+                    fronters.slice(0, 25).map((member: any) => {
+                        const option: any = {
+                            label: member.name,
+                            description: member.pronouns || 'No pronouns set',
+                            value: member.id
+                        };
+                        
+                        // Only add emoji if it exists and is a single emoji character
+                        const emoji = member.tags && member.tags.length > 0 ? member.tags[0] : null;
+                        if (emoji && /^\p{Emoji}$/u.test(emoji)) {
+                            option.emoji = emoji;
+                        }
+                        
+                        return option;
+                    })
                 );
 
             const row = new ActionRowBuilder<StringSelectMenuBuilder>()
