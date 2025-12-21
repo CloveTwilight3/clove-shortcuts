@@ -97,7 +97,7 @@ class DoughAPIClient {
      */
     async multiSwitch(memberIds: string[]): Promise<{ status: string; message: string; fronters: any[]; count: number }> {
         try {
-            const response = await this.client.post('/api/multi_switch', {
+            const response = await this.client.post('/api/bot/switch', {
                 member_ids: memberIds
             });
             return response.data;
