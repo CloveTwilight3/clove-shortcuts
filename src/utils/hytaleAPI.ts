@@ -82,10 +82,30 @@ class HytaleAPIClient {
         try {
             console.log('[Hytale] Initializing login flow...');
             
+            // Proper browser headers to avoid Cloudflare blocking
+            const headers = {
+                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+                'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
+                'Accept-Language': 'en-US,en;q=0.5',
+                'Accept-Encoding': 'gzip, deflate, br',
+                'DNT': '1',
+                'Connection': 'keep-alive',
+                'Upgrade-Insecure-Requests': '1',
+                'Sec-Fetch-Dest': 'document',
+                'Sec-Fetch-Mode': 'navigate',
+                'Sec-Fetch-Site': 'none',
+                'Sec-Fetch-User': '?1',
+                'Cache-Control': 'max-age=0'
+            };
+            
             // Step 1: Initialize login flow
             const initResponse = await axios.get(
                 'https://backend.accounts.hytale.com/self-service/login/browser',
-                { maxRedirects: 0, validateStatus: (status) => status === 302 || status === 303 }
+                { 
+                    headers,
+                    maxRedirects: 0, 
+                    validateStatus: (status) => status === 302 || status === 303 
+                }
             );
 
             const location = initResponse.headers.location;
@@ -124,8 +144,11 @@ class HytaleAPIClient {
                 }),
                 {
                     headers: {
+                        ...headers,
                         'Content-Type': 'application/x-www-form-urlencoded',
-                        'Cookie': this.cookieJar.getCookieString()
+                        'Cookie': this.cookieJar.getCookieString(),
+                        'Origin': 'https://backend.accounts.hytale.com',
+                        'Referer': `https://backend.accounts.hytale.com/self-service/login/browser?flow=${flowId}`
                     },
                     maxRedirects: 0,
                     validateStatus: (status) => status >= 200 && status < 400
@@ -161,7 +184,11 @@ class HytaleAPIClient {
 
             // Step 3: Follow redirect to complete login
             const finalResponse = await axios.get(redirectLocation, {
-                headers: { 'Cookie': this.cookieJar.getCookieString() },
+                headers: { 
+                    ...headers,
+                    'Cookie': this.cookieJar.getCookieString(),
+                    'Referer': 'https://backend.accounts.hytale.com/'
+                },
                 maxRedirects: 5
             });
 
@@ -202,11 +229,25 @@ class HytaleAPIClient {
     async checkUsername(username: string): Promise<boolean> {
         await this.ensureLoggedIn();
 
+        const headers = {
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+            'Accept': 'application/json, text/plain, */*',
+            'Accept-Language': 'en-US,en;q=0.5',
+            'Accept-Encoding': 'gzip, deflate, br',
+            'Referer': 'https://hytale.com/',
+            'DNT': '1',
+            'Connection': 'keep-alive',
+            'Sec-Fetch-Dest': 'empty',
+            'Sec-Fetch-Mode': 'cors',
+            'Sec-Fetch-Site': 'same-site',
+            'Cookie': this.cookieJar.getCookieString()
+        };
+
         const response = await axios.get(
             `https://accounts.hytale.com/api/account/username-reservations/availability`,
             {
                 params: { username },
-                headers: { 'Cookie': this.cookieJar.getCookieString() },
+                headers,
                 validateStatus: (status) => status === 200 || status === 400
             }
         );
