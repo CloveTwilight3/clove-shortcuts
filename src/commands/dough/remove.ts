@@ -5,6 +5,7 @@ import {
     MessageFlags
 } from 'discord.js';
 import { doughAPI } from '../../utils/doughAPI';
+import { notifyFrontChange } from '../../utils/notifUtil';
 
 export default {
     data: new SlashCommandSubcommandBuilder()
@@ -135,6 +136,23 @@ async function removeMemberFromFront(
                 .setTimestamp();
 
             await interaction.editReply({ embeds: [successEmbed] });
+
+            // Send notifications to friends
+            try {
+                await notifyFrontChange(
+                    interaction.client,
+                    'remove',
+                    member.display_name || member.name,
+                    result.fronters,
+                    {
+                        id: interaction.user.id,
+                        tag: interaction.user.tag
+                    }
+                );
+            } catch (notifyError) {
+                console.error('Failed to send notifications:', notifyError);
+                // Don't fail the command if notifications fail
+            }
         } else {
             const errorEmbed = new EmbedBuilder()
                 .setColor(0xED4245) // Red
