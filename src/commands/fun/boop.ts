@@ -3,12 +3,12 @@ import {
     SlashCommandSubcommandBuilder
 } from 'discord.js';
 
-const MIKU67 = 'https://tenor.com/view/hatsune-miku-67-67-meme-67-kid-fortnite-gif-3262181143038603091';
+const boop = 'https://tenor.com/en-GB/view/boop-nose-anime-gif-6287077';
 
 export default {
     data: new SlashCommandSubcommandBuilder()
-        .setName('miku67')
-        .setDescription('67!')
+        .setName('boop')
+        .setDescription('Boop!')
         .addUserOption(option =>
             option
                 .setName('user')
@@ -20,9 +20,9 @@ export default {
         const targetUser = interaction.options.getUser('user');
 
         if (targetUser) {
-            await interaction.reply(`${targetUser}[.](${MIKU67})`);
+            await interaction.reply(`${targetUser}[.](${boop})`);
         } else {
-            await interaction.reply(MIKU67);
+            await interaction.reply(boop);
         }
     }
 };
