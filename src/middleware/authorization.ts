@@ -8,7 +8,7 @@ import { Interaction, EmbedBuilder } from 'discord.js';
  */
 
 /** Owner - Full access (you) */
-const OWNER_ID = '1025770042245251122';
+const OWNER_ID = '1209539928866816143';
 
 /** Friends - Limited access (non-sensitive commands only) */
 const FRIEND_IDS = [
