@@ -1,9 +1,5 @@
 import { Client, GatewayIntentBits } from 'discord.js';
-import * as dotenv from '@dotenvx/dotenvx';
 import { loadEvents } from './handlers/eventHandler';
-
-// Load environment variables
-dotenv.config();
 
 // Create a new client instance with minimal intents for user-installed bot
 const client = new Client({

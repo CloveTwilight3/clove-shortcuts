@@ -1,6 +1,4 @@
 import { Interaction, EmbedBuilder } from 'discord.js';
-import * as dotenv from '@dotenvx/dotenvx';
-dotenv.config()
 
 /**
  * Authorization levels for the bot

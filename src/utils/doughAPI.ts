@@ -1,7 +1,4 @@
 import axios, { AxiosInstance } from 'axios';
-import * as dotenv from '@dotenvx/dotenvx';
-
-dotenv.config();
 
 /**
  * API Client for Doughmination Website
